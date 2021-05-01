@@ -1,5 +1,6 @@
 const server = {
   port: process.env.PORT || 4000,
+  clusterEnabled: process.env.CLUSTER_ENABLED || true,
 };
 
 module.exports = {
