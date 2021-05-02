@@ -1,13 +1,16 @@
-const dateFormat = require('dateformat');
+/* eslint-disable consistent-return */
 const { successResponse } = require('../../util/response');
+const healthService = require('../services/health');
 
 module.exports = {
-  async getHealthStatus({ req, res, next }) {
-    return res.status(200).send(successResponse({
-      results: {
-        time: dateFormat(new Date(), 'dd-mm-yyyy h:MM:ss'),
-        uptime: `${Math.floor(Math.floor(process.uptime() * 1000) / 60000)} min.`,
-      },
-    }));
+  async getHealthStatus(req, res, next) {
+    try {
+      const { results } = await healthService.getHealthStatus();
+
+      return res.status(200).send(successResponse({ results }));
+    }
+    catch (error) {
+      next(error);
+    }
   },
 };

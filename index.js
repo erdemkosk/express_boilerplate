@@ -4,30 +4,28 @@ const ip = require('ip');
 const app = require('./main.js');
 const config = require('./config');
 const logger = require('./api/plugin/logger');
+const healthService = require('./api/server/services/health');
 
 require('./api/plugin/mongodb');
 
 if (config.server.clusterEnabled && cluster.isMaster) {
   const cpuCount = os.cpus().length;
 
-  logger.info(`Clusters enabled! Total Cluster count: ${cpuCount}`);
+  logger.info(`Clusters enabled! Total Cluster Count: ${cpuCount}`);
 
   for (let index = 0; index < cpuCount; index += 1) {
     cluster.fork();
-
-    cluster.on('exit', (worker) => {
-      logger.info(`Worker${worker.process.pid} died`);
-      cluster.fork();
-    });
   }
+
+  cluster.on('exit', (worker) => {
+    logger.info(`Worker${worker.process.pid} died`);
+    cluster.fork();
+  });
 }
 else {
-  app.use('/whoami', (req, res) => {
-    res.json(`My name is pid:${cluster.worker.process.pid}`);
-  });
+  healthService.setPid({ workerId: cluster.worker.process.pid });
 
-  app.listen(config.server.port, () => (config.swagger.enabled ? logger.info(`HTTP server is running at: \n - 
+  app.listen(config.server.port, () => (config.swagger.enabled ? logger.info(`Express server is running at: \n - 
     Api: http://${ip.address()}:${config.server.port} \n - Swagger: http://${ip.address()}:${config.server.port}/api-docs`) :
-    logger.info(`HTTP server is running at: \n - Api: http://${ip.address()}:${config.server.port}`)));
-
+    logger.info(`Express server is running at: \n - Api: http://${ip.address()}:${config.server.port}`)));
 }
