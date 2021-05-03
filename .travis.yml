@@ -1,7 +1,7 @@
 language: node_js
 node_js:
  - "14.15.0"
-scripts:
+script:
  - echo '___Build Started____'
  - echo '___Installing Dependencies____'
  - npm install 
