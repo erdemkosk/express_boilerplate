@@ -23,7 +23,7 @@ if (config.server.clusterEnabled && cluster.isMaster) {
   });
 }
 else {
-  healthService.setPid({ workerId: cluster.worker.process.pid });
+  healthService.setPid({ workerId: cluster?.worker?.process?.pid || 'main' });
 
   app.listen(config.server.port, () => (config.swagger.enabled ? logger.info(`Express server is running at: \n - 
     Api: http://${ip.address()}:${config.server.port} \n - Swagger: http://${ip.address()}:${config.server.port}/api-docs`) :
