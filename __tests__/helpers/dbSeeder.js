@@ -18,7 +18,13 @@ class DBSeeder {
 
     this.seeder = new Seeder(config);
     this.collections = this.seeder.readCollectionsFromPath(
-      path.resolve('./__tests__/seed-data'),
+      path.resolve('./__tests__/helpers/seed-data/'),
+      {
+        extensions: ['js'],
+        transformers: [
+          Seeder.Transformers.replaceDocumentIdWithUnderscoreId,
+        ],
+      },
     );
   }
 
